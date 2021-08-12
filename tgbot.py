@@ -5,7 +5,7 @@
 # Add translation to texts : Open call for other languages !
 
 # BETA version / copyleft Laurent alias gouroufr
-version = "Version 20210517-03"
+version = "Version 20210808-01"
 
 import os
 import time
@@ -34,8 +34,10 @@ temps_restant_charge = "❔" # not yet known
 text_energie = "❔" # not yet known
 usable_battery_level = -1 # not yet known
 nouvelleinformation = False # global var to prevent redondant messages (is true only when new infos appears)
-minbat=5  # minimum battery level that displays an alert message
+minbat=20  # minimum battery level that displays an alert message
 doors_state = "❔" 
+voltage = "❔"
+power = "❔"
 windows_state = "❔" 
 trunk_state = "❔" 
 frunk_state = "❔" 
@@ -102,66 +104,39 @@ print (tirets + crlf)
 # EN : English
 # SP : -not implemented-
 # Call for volunteers => Please provide PR with other languages
-if language == "FR":
-	contobroker = "✔️ connecté au broker MQTT avec succès"+crlf+version
-	brokerfailed = "❌ échec de connexion au broker MQTT"
-	majdispo = "🎁 une mise à jour est disponible"
-	etatendormie = "💤 est endormie"
-	etatonline = "📶 est connectée"
-	etatsuspend = "🛏️ cherche à s'endormir"
-	etatcharge = "🔌 se recharge"
-	etatoffline = "🛰️ n'est pas connectée au réseau"
-	etatstart = "🚀 démarre ses systèmes"
-	etatdrive = "🏁 roule"
-	etatunk = "⭕ état inconnu"
-	heure = "heure"     
-	minute = "minute"
-	plurialsuffix = "s" 
-	chargeterminee = "✅ charge terminée"
-	energieadded = "⚡️ 000 kWh ajoutés"  # Keep the 000 in the string, a replace is made with real value
-	carislocked = "🔐 est verrouillée"
-	carisunlocked = "🔓 est déverrouillée"
-	lowbattery="Batterie faible"
-	dooropened="🕊️ Porte(s) ouverte(s)"
-	doorclosed="☑️ Portes fermées"
-	windowsopened="🕊️ Fenêtre(s) ouverte(s)"
-	windowsclosed="☑️ Fenêtres fermées"
-	trunkopened="🕊️ Coffre ouvert"
-	trunkclosed="☑️ Coffre fermé"
-	frunkopened="🕊️ Frunk ouvert"
-	frunkclosed="☑️ Frunk fermé"
-
-elif language == "SP":
+if language == "SP":
 	print("SPANISH language not available yet") # No text translation available would send empty messages, so we end here
 	exit(1)                                     # implemented here as an example for Pull Requests for additionnal languages
 else:
-	contobroker = "✔️ successfully connected to MQTT broker"+crlf+version
+	contobroker = "✔️ Successfully connected to MQTT broker"+crlf+version
 	brokerfailed = "❌ Failed to connect to MQTT broker"
 	majdispo = "🎁 An update is available"
-	etatendormie = "💤 is asleep"
-	etatonline = "📶 is online"
-	etatsuspend = "🛏️ trying to sleep"
-	etatcharge = "🔌 is charging"
-	etatoffline ="🛰️ is not connected"
-	etatstart = "🚀 is starting"
-	etatdrive = "🏁 is driving"
-	etatunk = "⭕ Unknown state"
-	heure = "hour"    
-	minute = "minute" 
+	etatendormie = "💤 Car Asleep"
+	etatonline = "📶 Car Online"
+	etatsuspend = "🛏️ Trying to sleep"
+	etatcharge = "🔌 Car Charging"
+	etatoffline ="🛰️ Car Disconnected"
+	etatstart = "🚀 Car Starting"
+	etatdrive = "🏁 Car Driving"
+	etatunk = "⭕ Unknown State"
+	heure = "Hour"    
+	minute = "Minute" 
 	plurialsuffix = "s" 
-	chargeterminee = "✅ charge ended"
-	energieadded = "⚡️ 000 kWh added"  # Keep the 000 in the string, a replace is made with real value
-	carislocked = "🔐 is locked"
-	carisunlocked = "🔓 is unlocked"
-	lowbattery="Low battery"
-	dooropened="🕊️ Door(s) opened"
-	doorclosed="☑️ Doors closed"
-	windowsopened="🕊️ Windows(s) opened"
-	windowsclosed="☑️ Windows closed"
-	trunkopened="🕊️ Trunk is opened"
-	trunkclosed="☑️ Trunk is closed"
-	frunkopened="🕊️ Frunk is opened"
-	frunkclosed="☑️ Frunk is closed"
+	chargeterminee = "✅ Charge Ended"
+	energieadded = "⚡️ 000 kWh Added"  # Keep the 000 in the string, a replace is made with real value
+	powers = "⚡️ 00 A"
+	volts = "⚡️ 000 V"
+	carislocked = "🔐 Car Locked"
+	carisunlocked = "🔓 Car Unlocked"
+	lowbattery="Low battery!!"
+	dooropened="🕊️ Door Opened"
+	doorclosed="☑️ Door Closed"
+	windowsopened="🕊️ Windows Opened"
+	windowsclosed="☑️ Windows Closed"
+	trunkopened="🕊️ Trunk Opened"
+	trunkclosed="☑️ Trunk Closed"
+	frunkopened="🕊️ Frunk Opened"
+	frunkclosed="☑️ Frunk Closed"
 
 
 # Partially based on example from https://pypi.org/project/paho-mqtt/
@@ -197,6 +172,8 @@ def on_connect(client, userdata, flags, rc):
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/speed")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/est_battery_range_km")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/heading")
+	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_volrage")
+	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_actual_current")
 	
 
 # Overcharging static variables with infos collected each round
@@ -236,11 +213,15 @@ def on_message(client, userdata, msg):
 		global heure
 		global minute
 		global plurialsuffix
+		global voltage
+		global power
+		global text_v
+		global text_p
 		now = datetime.now()
 		affminute = minute
 		affheure = heure
 		# today = now.strftime("%d-%m-%Y %H:%M:%S")
-		today = now.strftime("%d/%m/%Y %H:%M:%S") 
+		today = now.strftime("%Y/%m/%d %H:%M:%S") 
 		print(str(today)+" >> "+str(msg.topic)+" : "+str(msg.payload.decode()))
 	
 
@@ -267,11 +248,19 @@ def on_message(client, userdata, msg):
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
+		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_voltage":
+			volta = msg.payload.decode()
+			text_v = voltages.replace("000", str(volta))
+			
+		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_actual_current":
+			powera = msg.payload.decode()
+			text_p = powers.replace("00", str(powera))
+		
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charge_energy_added":                                                # Collect infos but don't send a message NOW
 			kwhadded = msg.payload.decode()
 			text_energie = energieadded.replace("000", str(kwhadded))
-
-			
+		
+					
 		# Please send me a message :
 		# --------------------------
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/update_available":
@@ -351,14 +340,14 @@ def on_message(client, userdata, msg):
 				if frunk_state != "❔": text_msg = text_msg+frunk_state+crlf
 
 				if etat_connu == str(etatcharge) and temps_restant_charge == chargeterminee: text_msg = text_msg+chargeterminee+crlf+text_energie+crlf
-				elif etat_connu == str(etatcharge) and temps_restant_charge != "❔": text_msg = text_msg+temps_restant_charge+crlf+text_energie+crlf
+				elif etat_connu == str(etatcharge) and temps_restant_charge != "❔": text_msg = text_msg+temps_restant_charge+crlf+text_energie+crlf+text_v+crlf+text_p+crlf
 				if int(usable_battery_level) > minbat and int(usable_battery_level) != -1 :text_msg = text_msg+"🔋 "+str(usable_battery_level)+" %"+crlf
 				elif int(usable_battery_level) != -1: text_msg = text_msg+"🛢️ "+str(usable_battery_level)+" % "+lowbattery+crlf
 				if distance > 0 and UNITS == "Km": text_msg = text_msg+"🏎️ "+str(math.floor(distance))+" Km"+crlf
 				if distance > 0 and UNITS == "Miles": text_msg = text_msg+"🏎️ "+str(math.floor(distance/1.609))+" miles"+crlf
 
 				# GPS location (googlemap)
-				if GPS: text_msg = text_msg + "https://www.google.fr/maps/?q="+str(latitude)+","+str(longitude)+crlf
+				#if GPS: text_msg = text_msg + "https://www.google.com/maps/?q="+str(latitude)+","+str(longitude)+crlf
 
 				# bottom HORODATAGE the message if needed
 				if HORODATAGE == "bottom": text_msg = text_msg+crlf+str(today)
