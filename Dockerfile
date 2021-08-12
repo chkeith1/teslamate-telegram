@@ -10,7 +10,7 @@ ENV PYTHONUNBUFFERED 1
 # Install pip requirements / layers that should be static enough
 WORKDIR /app
 ADD requirements.txt .
-ADD teslamte_telegram_bot.py /app/
+ADD tgbot.py /app/
 RUN ln -sf /usr/share/zoneinfo/Europe/Paris /etc/timezone && \
     ln -sf /usr/share/zoneinfo/Europe/Paris /etc/localtime
 
@@ -33,4 +33,4 @@ RUN useradd appuser && chown -R appuser /app
 USER appuser
 
 # Entrypoint
-CMD ["python", "./teslamte_telegram_bot.py"]
+CMD ["python", "./tgbot.py"]
