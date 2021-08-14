@@ -172,7 +172,7 @@ def on_connect(client, userdata, flags, rc):
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/speed")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/est_battery_range_km")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/heading")
-	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_volrage")
+	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_voltage")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_actual_current")
 	
 
@@ -243,14 +243,18 @@ def on_message(client, userdata, msg):
 				if temps_restant_minute > 1: affminute = affminute + plurialsuffix
 				if temps_restant_heure > 1: affheure = affheure + plurialsuffix
 				temps_restant_charge = "⏳ "+str(temps_restant_heure)+" " + affheure + " "+str(temps_restant_minute)+" "+ affminute
+				nouvelleinformation = True
 
+				
 			if int(float(temps_restant_mqtt)) == 0:
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_voltage":
 			volta = msg.payload.decode()
-			text_v = voltages.replace("000", str(volta))
+			if volta < 300 : voltb = 220
+			else : voltb = volta
+			text_v = volts.replace("000", str(voltb))
 			
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_actual_current":
 			powera = msg.payload.decode()
@@ -339,7 +343,7 @@ def on_message(client, userdata, msg):
 				if trunk_state != "❔": text_msg = text_msg+trunk_state+crlf
 				if frunk_state != "❔": text_msg = text_msg+frunk_state+crlf
 
-				if etat_connu == str(etatcharge) and temps_restant_charge == chargeterminee: text_msg = text_msg+chargeterminee+crlf+text_energie+crlf
+				if etat_connu == str(etatcharge) and temps_restant_charge == chargeterminee: text_msg = text_msg+chargeterminee+crlf+text_energie+crlf+text_v+crlf+text_p+crlf
 				elif etat_connu == str(etatcharge) and temps_restant_charge != "❔": text_msg = text_msg+temps_restant_charge+crlf+text_energie+crlf+text_v+crlf+text_p+crlf
 				if int(usable_battery_level) > minbat and int(usable_battery_level) != -1 :text_msg = text_msg+"🔋 "+str(usable_battery_level)+" %"+crlf
 				elif int(usable_battery_level) != -1: text_msg = text_msg+"🛢️ "+str(usable_battery_level)+" % "+lowbattery+crlf
@@ -388,7 +392,7 @@ except:
         # pdb.post_mortem(tb)
 
 #except KeyboardInterrupt:
-#	print("exiting")
+#print("exiting")
 
 # au revoir...
 client.disconnect()
