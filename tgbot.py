@@ -251,8 +251,8 @@ def on_message(client, userdata, msg):
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_voltage":
-			volta = msg.payload.decode()
-			if volta < 300 : voltb = 220
+			volta = str(msg.payload.decode())
+			if float(volta) > 0 : voltb = 220
 			else : voltb = volta
 			text_v = volts.replace("000", str(voltb))
 			
