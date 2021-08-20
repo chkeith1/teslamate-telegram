@@ -243,12 +243,12 @@ def on_message(client, userdata, msg):
 				temps_restant_minute = int(float(round((float(temps_restant_mqtt) - temps_restant_heure) * 60,1)))
 				if temps_restant_minute > 1: affminute = affminute + plurialsuffix
 				if temps_restant_heure > 1: affheure = affheure + plurialsuffix
-				if int(temp_restant_heure - temp_restant_heure) = 0 : end = 0
+				if int(temp_restant_heure - temp_restant_heure) == 0 : end == 0
 				temps_restant_charge = "⏳ "+str(temps_restant_heure)+" " + affheure + " "+str(temps_restant_minute)+" "+ affminute
 				nouvelleinformation = True
 
 				
-			if int(float(temps_restant_mqtt)) == 0 and end = 0:
+			if int(float(temps_restant_mqtt)) == 0 and end == 0:
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
