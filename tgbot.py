@@ -254,9 +254,11 @@ def on_message(client, userdata, msg):
 
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_voltage":
 			volta = str(msg.payload.decode())
-			if float(volta) > 200 : voltb = 220
-			text_v = volts.replace("000", str(voltb))
-			else : text_V = "⚡️ DC Charging"
+			if float(volta) > 200 : 
+				voltb = 220
+				text_v = volts.replace("000", str(voltb))
+			else : 
+				text_V = "⚡️ DC Charging"
 			
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_actual_current":
 			powera = msg.payload.decode()
