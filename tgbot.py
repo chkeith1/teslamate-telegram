@@ -251,7 +251,7 @@ def on_message(client, userdata, msg):
 				nouvelleinformation = True
 
 				
-			if int(float(temps_restant_mqtt)) == 0 and end = True:
+			if int(float(temps_restant_mqtt)) == 0 and end == True:
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
