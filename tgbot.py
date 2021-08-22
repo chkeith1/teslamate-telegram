@@ -5,7 +5,7 @@
 # Add translation to texts : Open call for other languages !
 
 # BETA version / copyleft Laurent alias gouroufr
-version = "Version 20210808-01"
+version = "Version 20210820-01"
 
 import os
 import time
@@ -45,6 +45,9 @@ latitude = "❔"
 longitude = "❔"
 DEBUG = "❔"
 UNITS = "❔"
+end = "❔"
+text_v = "❔"
+text_p = "❔"
 
 distance = -1
 tirets = "--------------------------------------------"
@@ -243,12 +246,12 @@ def on_message(client, userdata, msg):
 				temps_restant_minute = int(float(round((float(temps_restant_mqtt) - temps_restant_heure) * 60,1)))
 				if temps_restant_minute > 1: affminute = affminute + plurialsuffix
 				if temps_restant_heure > 1: affheure = affheure + plurialsuffix
-				if int(temps_restant_heure - temps_restant_minute) == 0 : end == 0
+				if int(temps_restant_heure - temps_restant_minute) == 0 : end = True
 				temps_restant_charge = "⏳ "+str(temps_restant_heure)+" " + affheure + " "+str(temps_restant_minute)+" "+ affminute
 				nouvelleinformation = True
 
 				
-			if int(float(temps_restant_mqtt)) == 0 and end == 0:
+			if int(float(temps_restant_mqtt)) == 0 and end = True:
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
@@ -366,7 +369,7 @@ def on_message(client, userdata, msg):
 				nouvelleinformation = False  # we reset this to false since we've just sent a message to the user (dont spam)
 				del temps_restant_charge     # reset the computed time to full charge to unkown state to prevent redondant and not updated messages
 				temps_restant_charge = "❔"  # reset the computed time to full charge to unkown state to prevent redondant and not updated messages
-
+				end = "❔"
 
 	except: # catch *all* exceptions
 		e = sys.exc_info()
