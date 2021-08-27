@@ -128,7 +128,7 @@ else:
 	chargeterminee = "✅ Charge Ended"
 	energieadded = "⚡️ 000 kWh Added"  # Keep the 000 in the string, a replace is made with real value
 	powers = "⚡️ 00 A"
-	volts = "⚡️ 000 V"
+	volts = "⚡️ 000 kW"
 	carislocked = "🔐 Car Locked"
 	carisunlocked = "🔓 Car Unlocked"
 	lowbattery="Low battery!!"
@@ -175,7 +175,7 @@ def on_connect(client, userdata, flags, rc):
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/speed")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/est_battery_range_km")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/heading")
-	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_voltage")
+	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_power")
 	client.subscribe("teslamate/cars/"+str(CAR_ID)+"/charger_actual_current")
 	
 
@@ -255,10 +255,10 @@ def on_message(client, userdata, msg):
 				temps_restant_charge = chargeterminee
 				nouvelleinformation = True     				# Should we tell the user the car is charged ? :-)
 
-		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_voltage":
+		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_power":
 			volta = str(msg.payload.decode())
-			if float(volta) > 200 : 
-				voltb = 220
+			if float(volta) < 12 : 
+				voltb = volta
 				text_v = volts.replace("000", str(voltb))
 			else : 
 				text_V = "⚡️ DC Charging"
