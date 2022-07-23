@@ -349,6 +349,7 @@ def on_message(client, userdata, msg):
 				if windows_state != "❔": text_msg = text_msg+windows_state+crlf
 				if trunk_state != "❔": text_msg = text_msg+trunk_state+crlf
 				if frunk_state != "❔": text_msg = text_msg+frunk_state+crlf
+				if ismaj != "❔": text_msg = text_msg+majdispo+crlf
 
 				if etat_connu == str(etatcharge) and temps_restant_charge == chargeterminee: text_msg = text_msg+chargeterminee+crlf+text_energie+crlf+text_v+crlf+text_p+crlf
 				elif etat_connu == str(etatcharge) and temps_restant_charge != "❔": text_msg = text_msg+temps_restant_charge+crlf+text_energie+crlf+text_v+crlf+text_p+crlf
