@@ -102,6 +102,5 @@ volumes:
 
 All is free software under GPL licence.
 
-Donations are welcome :
-
-Send bitcoins to 15DbfoLVmJ1iwHGnaeB25NBD2kE393XZZD Register and play/have fun/win a few satoshi for free here with this referral link : https://freebitco.in/?r=36618348 Help people around you Give a dog a new life (adoption) Save a licorn ... :-)
+Inspired and edited from:
+https://github.com/gouroufr/teslamate-telegram
