@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 # By Gouroufr inspired by https://github.com/JakobLichterfeld/TeslaMate_Telegram_Bot
 # Modified to be able to run without the API REST... we've got all infos we needed in the broker messages
-# Add translation to texts : Open call for other languages !
-
 # BETA version / copyleft Laurent alias gouroufr
 version = "Version 20210820-01"
 
@@ -102,15 +100,8 @@ print("Env Var UNITS     : " + str(UNITS))
 print("Mode DEBUG        : " + str(DEBUG))
 print (tirets + crlf)
 
-# Text translation depends on a 2 letters code : 
-# FR : Français
-# EN : English
-# SP : -not implemented-
-# Call for volunteers => Please provide PR with other languages
-if language == "SP":
-	print("SPANISH language not available yet") # No text translation available would send empty messages, so we end here
-	exit(1)                                     # implemented here as an example for Pull Requests for additionnal languages
-else:
+# Text 
+if language == "EN":
 	contobroker = "✔️ Successfully connected to MQTT broker"+crlf+version
 	brokerfailed = "❌ Failed to connect to MQTT broker"
 	majdispo = "🎁 An update is available"
@@ -140,6 +131,8 @@ else:
 	trunkclosed="☑️ Trunk Closed"
 	frunkopened="🕊️ Frunk Opened"
 	frunkclosed="☑️ Frunk Closed"
+else:
+    exit(1)
 
 
 # Partially based on example from https://pypi.org/project/paho-mqtt/
