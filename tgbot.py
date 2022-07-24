@@ -25,6 +25,7 @@ pseudo = "❔" # not yet known
 model  = "❔" # not yet known
 km = "❔" # not yet known
 ismaj = "❔" # not yet known
+updaten = "❔" # no update
 etat_connu = "❔" # not yet known
 locked = "❔" # not yet known
 text_locked = "❔" # not yet known
@@ -268,9 +269,8 @@ def on_message(client, userdata, msg):
 		# Please send me a message :
 		# --------------------------
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/update_available":
-			if ismaj != str(msg.payload.decode()):
-				ismaj = str(msg.payload.decode())
-				nouvelleinformation = True
+			if str(msg.payload.decode()) == "false": ismaj = updaten
+			elif str(msg.payload.decode()) == "true": ismaj = majdispo
 	
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/state":
 			if str(msg.payload.decode()) == "online":
