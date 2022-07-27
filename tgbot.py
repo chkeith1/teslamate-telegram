@@ -340,6 +340,7 @@ def on_message(client, userdata, msg):
 				else: text_msg = pseudo+" ("+model+") "+str(km)+" km"+crlf+text_locked+crlf+etat_connu+crlf
 			
 				# Do we have some special infos to add to the standard message ?
+				if doors_state != "❔": text_msg = text_msg+doors_state+crlf
 				if windows_state != "❔": text_msg = text_msg+windows_state+crlf
 				if trunk_state != "❔": text_msg = text_msg+trunk_state+crlf
 				if frunk_state != "❔": text_msg = text_msg+frunk_state+crlf
