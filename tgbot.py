@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 # By Gouroufr inspired by https://github.com/JakobLichterfeld/TeslaMate_Telegram_Bot
 # Modified to be able to run without the API REST... we've got all infos we needed in the broker messages
+# Add translation to texts : Open call for other languages !
+
 # BETA version / copyleft Laurent alias gouroufr
-version = "Version 20210820-01"
+version = "Version 20220723-02"
 
 import os
 import time
@@ -134,6 +136,7 @@ if language == "EN":
 	frunkclosed="☑️ Frunk Closed"
 else:
     exit(1)
+    
 
 
 # Partially based on example from https://pypi.org/project/paho-mqtt/
@@ -251,12 +254,11 @@ def on_message(client, userdata, msg):
 
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_power":
 			volta = str(msg.payload.decode())
-			if float(volta) < 12 : 
+			if float(volta) > 1 : 
 				voltb = volta
 				text_v = volts.replace("000", str(voltb))
-			else : 
-				text_V = "⚡️ DC Charging"
-			
+
+
 		if msg.topic == "teslamate/cars/"+str(CAR_ID)+"/charger_actual_current":
 			powera = msg.payload.decode()
 			text_p = powers.replace("00", str(powera))
@@ -338,7 +340,6 @@ def on_message(client, userdata, msg):
 				else: text_msg = pseudo+" ("+model+") "+str(km)+" km"+crlf+text_locked+crlf+etat_connu+crlf
 			
 				# Do we have some special infos to add to the standard message ?
-				if doors_state != "❔": text_msg = text_msg+doors_state+crlf
 				if windows_state != "❔": text_msg = text_msg+windows_state+crlf
 				if trunk_state != "❔": text_msg = text_msg+trunk_state+crlf
 				if frunk_state != "❔": text_msg = text_msg+frunk_state+crlf
